@@ -1,0 +1,33 @@
+FILES TO UPLOAD (keep this structure)
+======================================
+
+In the ROOT (e.g. public_html or Netlify drop):
+  index.html
+  services.html
+  techniques.html
+  bio.html
+  bookings.html
+  contact.html
+  sitemap.xml
+  robots.txt
+
+Folder: css/
+  css/style.css
+
+Folder: js/
+  js/main.js
+
+Folder: assets/
+  assets/hero-massage.jpg
+  assets/services-hands.jpg
+  assets/bio-studio.jpg
+  assets/logo.png
+
+If you added certificate PDFs, also upload:
+  assets/cert-cmt.pdf
+  assets/cert-cmldt.pdf
+  assets/cert-clt.pdf
+
+---
+Ready-made zip: yuliasmassagelab-upload.zip
+Upload that to Netlify (drag & drop), or unzip it on your server into public_html.

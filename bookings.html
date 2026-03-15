@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book a Session — Yulia's Massage Lab</title>
+  <meta name="description" content="Book a massage session with Yulia. Choose your service and preferred time.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"></button>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="techniques.html">Techniques</a></li>
+          <li><a href="bio.html">About</a></li>
+          <li><a href="bookings.html" aria-current="page">Book</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="page-title">
+          <h1>Book a session</h1>
+        </div>
+        <p>Request an appointment using the form below. I’ll get back to you shortly to confirm your time and answer any questions.</p>
+
+        <div class="booking-options">
+          <div class="card">
+            <h3>In-studio sessions</h3>
+            <p>Sessions take place at my private studio. Address and parking details are sent once your appointment is confirmed.</p>
+          </div>
+        </div>
+
+        <form action="#" method="post" id="booking-form">
+          <div class="form-group">
+            <label for="name">Name *</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone">
+          </div>
+          <div class="form-group">
+            <label for="service">Service</label>
+            <select id="service" name="service">
+              <option value="">Select a service</option>
+              <option value="relaxation-60">Relaxation massage — 60 min</option>
+              <option value="therapeutic-60">Yulia's Therapeutic Massage — 60 min</option>
+              <option value="therapeutic-90">Yulia's Therapeutic Massage — 90 min</option>
+              <option value="therapeutic-120">Yulia's Therapeutic Massage — 2 hours</option>
+              <option value="mld-60">Manual lymphatic drainage — 60 min</option>
+              <option value="mld-90">Manual lymphatic drainage — 90 min</option>
+              <option value="stretching-60">Stretching session — 1 hour</option>
+              <option value="cupping-30">Cupping session — 30 min</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="preferred">Preferred days/times</label>
+            <textarea id="preferred" name="preferred" placeholder="e.g. weekday mornings, Saturday afternoon"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="notes">Notes or questions</label>
+            <textarea id="notes" name="notes" placeholder="Any areas to focus on or things I should know?"></textarea>
+          </div>
+          <button type="submit">Send request</button>
+        </form>
+
+        <p style="margin-top: 2rem; font-size: 0.9rem; color: var(--charcoal-soft);">You can also book or ask questions by <a href="contact.html">email or phone</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span class="logo"><a href="index.html">Yulia's Massage Lab</a></span>
+      <nav class="nav">
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="techniques.html">Techniques</a></li>
+          <li><a href="bio.html">About</a></li>
+          <li><a href="bookings.html">Book</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+  <script>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var service = params.get('service');
+      var select = document.getElementById('service');
+      if (service && select && select.querySelector('option[value="' + service + '"]')) {
+        select.value = service;
+      }
+    })();
+    document.getElementById('booking-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you! Your request has been sent. I\'ll be in touch soon to confirm your appointment.');
+      this.reset();
+    });
+  </script>
+</body>
+</html>

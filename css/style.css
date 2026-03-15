@@ -1,0 +1,555 @@
+/* Yulia's Massage Lab — Airforce blue, warm eggshell, soft charcoal */
+:root {
+  --airforce: #4a7c9a;
+  --airforce-dark: #3a6479;
+  --airforce-light: #6b9bb5;
+  --eggshell: #f5f0e6;
+  --eggshell-warm: #ebe4d6;
+  --charcoal: #3d3d3d;
+  --charcoal-soft: #5a5a5a;
+  --white: #fdfcfa;
+  --shadow: rgba(61, 61, 61, 0.08);
+  --shadow-strong: rgba(61, 61, 61, 0.15);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Cormorant Garamond", "Georgia", serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--charcoal);
+  background: var(--eggshell);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: "Cormorant Garamond", "Georgia", serif;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--charcoal);
+}
+
+h1 { font-size: clamp(2rem, 5vw, 3rem); }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.25rem); margin-top: 0; }
+h3 { font-size: 1.25rem; }
+
+a {
+  color: var(--airforce);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--airforce-dark);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Layout */
+.site-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--eggshell-warm);
+  padding: 0.5rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.site-header .wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+}
+
+.logo {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.logo a {
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+}
+
+.logo a:hover { color: var(--airforce); }
+
+.logo img {
+  display: block;
+  height: 140px;
+  width: auto;
+  /* Blend light/white logo background into header */
+  mix-blend-mode: multiply;
+}
+
+.nav {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  color: var(--charcoal-soft);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.nav a:hover,
+.nav a[aria-current="page"] {
+  color: var(--airforce);
+}
+
+/* Mobile menu */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--charcoal);
+  font-size: 1.5rem;
+}
+
+@media (max-width: 700px) {
+  .nav-toggle { display: block; }
+  .nav ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--eggshell-warm);
+    padding: 1rem 2rem;
+    flex-direction: column;
+  }
+  .nav.is-open ul { display: flex; }
+}
+
+/* Main content */
+main {
+  min-height: 60vh;
+}
+
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.wrap-wide {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, var(--airforce) 0%, var(--airforce-dark) 100%);
+  color: var(--white);
+  padding: 4rem 2rem 5rem;
+  text-align: center;
+}
+
+.hero h1 {
+  color: inherit;
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 6vw, 3.25rem);
+}
+
+.hero .tagline {
+  font-size: 1.15rem;
+  opacity: 0.95;
+  max-width: 520px;
+  margin: 0 auto 2rem;
+}
+
+
+/* Hero with image */
+.hero-image {
+  position: relative;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--charcoal) center/cover no-repeat;
+  color: var(--white);
+}
+
+.hero-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(61,61,61,0.4) 0%, rgba(61,61,61,0.7) 100%);
+}
+
+.hero-image .wrap {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.hero-image h1 { color: inherit; }
+
+.hero-logo-wrap {
+  background: rgba(253, 252, 250, 0.96);
+  padding: 1.25rem 1.75rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.hero-logo {
+  display: block;
+  height: 72px;
+  width: auto;
+}
+
+.hero-image .hero-credentials {
+  color: inherit;
+  font-size: 0.95rem;
+  opacity: 0.95;
+  margin: 0.25rem 0 0;
+  letter-spacing: 0.02em;
+}
+
+/* Sections */
+.section {
+  padding: 4rem 0;
+}
+
+.section--alt {
+  background: var(--white);
+}
+
+.section--dark {
+  background: var(--charcoal);
+  color: var(--eggshell);
+}
+
+.section--dark h2 { color: var(--eggshell); }
+.section--dark p { color: var(--eggshell-warm); }
+
+/* Cards / grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 2px;
+  box-shadow: 0 2px 12px var(--shadow);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 28px var(--shadow-strong);
+  transform: translateY(-2px);
+}
+
+.card h3 {
+  margin-top: 0;
+  color: var(--airforce-dark);
+}
+
+/* Services list */
+.service-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.service-list li {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--eggshell-warm);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.service-list li:last-child { border-bottom: none; }
+
+.service-list .name {
+  font-weight: 600;
+  color: var(--airforce-dark);
+}
+
+.service-list .desc {
+  color: var(--charcoal-soft);
+  font-size: 0.95rem;
+}
+
+.service-list .service-book {
+  margin-top: 0.5rem;
+}
+
+.service-list .service-book a {
+  background: var(--airforce-light);
+  color: #fff;
+  border: none;
+}
+
+.service-list .service-book a:hover {
+  background: var(--airforce);
+  color: #fff;
+}
+
+
+/* Bio */
+.bio-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.bio-block img {
+  border-radius: 2px;
+  box-shadow: 0 8px 32px var(--shadow-strong);
+}
+
+@media (max-width: 700px) {
+  .bio-block { grid-template-columns: 1fr; }
+  .bio-block img { order: -1; max-height: 280px; object-fit: cover; }
+}
+
+/* Forms */
+form {
+  max-width: 480px;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+form label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+  color: var(--charcoal);
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  font-size: 1rem;
+  border: 1px solid var(--eggshell-warm);
+  border-radius: 2px;
+  background: var(--white);
+  color: var(--charcoal);
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+  outline: none;
+  border-color: var(--airforce);
+  box-shadow: 0 0 0 3px rgba(74, 124, 154, 0.15);
+}
+
+form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* All buttons: same look as "Learn more about the styles and tools I use" */
+.hero-cta,
+.service-list .service-book a,
+button[type="submit"],
+.btn-primary {
+  display: inline-block;
+  background: var(--airforce-light);
+  color: var(--white);
+  border: none;
+  padding: 0.75rem 1.75rem;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  text-align: center;
+}
+
+.hero-cta:hover,
+.service-list .service-book a:hover,
+button[type="submit"]:hover,
+.btn-primary:hover {
+  background: var(--airforce);
+  color: var(--white);
+  transform: translateY(-1px);
+}
+
+/* Credentials list */
+.credentials-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.credentials-list li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--eggshell-warm);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.credentials-list li:last-child {
+  border-bottom: none;
+}
+
+.credentials-name {
+  font-weight: 500;
+  color: var(--charcoal);
+}
+
+.credentials-list a {
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+/* Contact info */
+.contact-details {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.contact-details a {
+  color: var(--airforce-dark);
+  font-weight: 600;
+}
+
+.contact-details a:hover {
+  color: var(--airforce);
+}
+
+.contact-thanks {
+  background: var(--airforce-light);
+  color: var(--charcoal);
+  padding: 1rem 1.25rem;
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.hours {
+  background: var(--eggshell-warm);
+  padding: 1.5rem;
+  border-radius: 2px;
+  margin-top: 1rem;
+}
+
+.hours-list {
+  margin: 0;
+}
+
+.hours-row {
+  margin-bottom: 0.35rem;
+}
+
+.hours-row:last-child {
+  margin-bottom: 0;
+}
+
+.hours-day {
+  display: inline-block;
+  min-width: 6.5rem;
+  font-weight: 600;
+  color: var(--airforce-dark);
+}
+
+.hours-time {
+  display: inline-block;
+}
+
+/* Footer */
+.site-footer {
+  background: var(--charcoal);
+  color: var(--eggshell-warm);
+  padding: 2.5rem 2rem;
+  margin-top: 4rem;
+  font-size: 0.9rem;
+}
+
+.site-footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site-footer a {
+  color: var(--eggshell);
+}
+
+.site-footer a:hover {
+  color: var(--white);
+}
+
+/* Page title */
+.page-title {
+  padding: 2.5rem 0 1rem;
+  border-bottom: 1px solid var(--eggshell-warm);
+  margin-bottom: 2rem;
+}
+
+.page-title h1 { margin: 0; }
+
+/* Booking options */
+.booking-options {
+  display: grid;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.booking-options .card {
+  padding: 2rem;
+}
+
+.booking-options .card h3 { margin-top: 0; }
+
+/* Utility */
+.text-center { text-align: center; }
+.mt-0 { margin-top: 0; }

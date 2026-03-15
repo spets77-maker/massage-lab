@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — Yulia's Massage Lab</title>
+  <meta name="description" content="Contact Yulia's Massage Lab in Folsom, CA. Book by text or email. Located at Cloud 9 Float+Spa, 220 Blue Ravine Rd, Quail Park.">
+  <link rel="canonical" href="https://yuliasmassagelab.com/contact.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"></button>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="techniques.html">Techniques</a></li>
+          <li><a href="bio.html">About</a></li>
+          <li><a href="bookings.html">Book</a></li>
+          <li><a href="contact.html" aria-current="page">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="page-title">
+          <h1>Contact</h1>
+        </div>
+        <p>Have a question or want to book? Reach out by email or phone. I’ll respond as soon as I can.</p>
+
+        <div class="contact-details" style="margin: 2rem 0;">
+          <p><strong>Email</strong><br><a href="mailto:get_massage@yuliasmassagelab.com">get_massage@yuliasmassagelab.com</a></p>
+          <p><strong>Phone</strong> <em>(please text)</em><br><a href="tel:+15133024952">513-302-4952</a></p>
+          <p><strong>Studio</strong><br>I work from <a href="https://www.google.com/maps/search/?api=1&query=220+Blue+Ravine+Rd+%23180,+Folsom,+CA+95630" target="_blank" rel="noopener noreferrer">Cloud 9 Float+Spa</a> located at 220 Blue Ravine Rd #180, Folsom, CA 95630 in Quail Park.</p>
+        </div>
+
+        <div class="hours">
+          <h3 class="mt-0">Hours</h3>
+          <div class="hours-list">
+            <div class="hours-row"><span class="hours-day">Monday</span><span class="hours-time">Closed</span></div>
+            <div class="hours-row"><span class="hours-day">Tuesday</span><span class="hours-time">8:00 am – 9:00 pm</span></div>
+            <div class="hours-row"><span class="hours-day">Wednesday</span><span class="hours-time">8:00 am – 9:00 pm</span></div>
+            <div class="hours-row"><span class="hours-day">Thursday</span><span class="hours-time">8:00 am – 9:00 pm</span></div>
+            <div class="hours-row"><span class="hours-day">Friday</span><span class="hours-time">8:00 am – 9:00 pm</span></div>
+            <div class="hours-row"><span class="hours-day">Saturday</span><span class="hours-time">Closed</span></div>
+            <div class="hours-row"><span class="hours-day">Sunday</span><span class="hours-time">Closed</span></div>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 2.5rem;">Send a message</h2>
+        <p id="contact-thanks" class="contact-thanks" style="display: none;">Thank you! Your message has been sent. I'll get back to you soon.</p>
+        <!-- Replace xnjgbqlk with your Formspree form ID (sign up at formspree.io, add get_massage@yuliasmassagelab.com) -->
+        <form action="https://formspree.io/f/xnjgbqlk" method="post" id="contact-form">
+          <input type="hidden" name="_next" value="">
+          <div class="form-group">
+            <label for="contact-name">Name *</label>
+            <input type="text" id="contact-name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="contact-email">Email *</label>
+            <input type="email" id="contact-email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="contact-message">Message *</label>
+            <textarea id="contact-message" name="message" required></textarea>
+          </div>
+          <button type="submit">Send message</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span class="logo"><a href="index.html">Yulia's Massage Lab</a></span>
+      <nav class="nav">
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="techniques.html">Techniques</a></li>
+          <li><a href="bio.html">About</a></li>
+          <li><a href="bookings.html">Book</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+  <script>
+    if (window.location.search === '?sent=1') {
+      document.getElementById('contact-thanks').style.display = 'block';
+      document.getElementById('contact-form').reset();
+    }
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var form = this;
+      var thanks = document.getElementById('contact-thanks');
+      var next = form.querySelector('input[name="_next"]');
+      next.value = window.location.origin + window.location.pathname + '?sent=1';
+      var data = new FormData(form);
+      fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' },
+        referrerPolicy: 'no-referrer'
+      }).then(function(r) {
+        if (r.ok) {
+          thanks.style.display = 'block';
+          form.reset();
+          window.history.replaceState(null, '', next.value || window.location.pathname + '?sent=1');
+        } else {
+          thanks.textContent = 'Something went wrong. Please try again or email me directly.';
+          thanks.style.display = 'block';
+        }
+      }).catch(function() {
+        thanks.textContent = 'Something went wrong. Please try again or email me directly.';
+        thanks.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>
