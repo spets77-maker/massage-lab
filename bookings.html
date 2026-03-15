@@ -42,18 +42,22 @@
           </div>
         </div>
 
-        <form action="#" method="post" id="booking-form">
+        <form action="https://formspree.io/f/xojknerw" method="post" id="booking-form">
           <div class="form-group">
-            <label for="name">Name *</label>
-            <input type="text" id="name" name="name" required>
+            <label for="first-name">First name *</label>
+            <input type="text" id="first-name" name="first_name" required>
+          </div>
+          <div class="form-group">
+            <label for="last-name">Last name *</label>
+            <input type="text" id="last-name" name="last_name" required>
           </div>
           <div class="form-group">
             <label for="email">Email *</label>
             <input type="email" id="email" name="email" required>
           </div>
           <div class="form-group">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" name="phone">
+            <label for="phone">Phone *</label>
+            <input type="tel" id="phone" name="phone" required>
           </div>
           <div class="form-group">
             <label for="service">Service</label>
@@ -99,6 +103,12 @@
       </nav>
     </div>
   </footer>
+  <div id="booking-confirm-modal" class="form-confirm-overlay" aria-hidden="true">
+    <div class="form-confirm-box">
+      <p id="booking-confirm-message">Received! We'll be in touch soon to confirm your appointment.</p>
+      <button type="button" class="btn-close" id="booking-confirm-close">OK</button>
+    </div>
+  </div>
   <script src="js/main.js"></script>
   <script>
     (function() {
@@ -109,11 +119,44 @@
         select.value = service;
       }
     })();
-    document.getElementById('booking-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Thank you! Your request has been sent. I\'ll be in touch soon to confirm your appointment.');
-      this.reset();
-    });
+    (function() {
+      var form = document.getElementById('booking-form');
+      var modal = document.getElementById('booking-confirm-modal');
+      var messageEl = document.getElementById('booking-confirm-message');
+      var closeBtn = document.getElementById('booking-confirm-close');
+      function showModal(msg) {
+        messageEl.textContent = msg || 'Received! We\'ll be in touch soon to confirm your appointment.';
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+      }
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+      });
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var data = new FormData(form);
+        fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' },
+          referrerPolicy: 'no-referrer'
+        }).then(function(r) {
+          if (r.ok) {
+            form.reset();
+            showModal('Received! We\'ll be in touch soon to confirm your appointment.');
+          } else {
+            showModal('Something went wrong. Please try again or contact me by phone or email.');
+          }
+        }).catch(function() {
+          showModal('Something went wrong. Please try again or contact me by phone or email.');
+        });
+      });
+    })();
   </script>
 </body>
 </html>
