@@ -2,3 +2,11 @@
 *.zip
 yuliasmassagelab-upload/
 .venv/
+node_modules/
+db/*.sqlite
+db/*.sqlite-shm
+db/*.sqlite-wal
+.env
+config.local.php
+.deploy-staging/
+.deploy-credentials

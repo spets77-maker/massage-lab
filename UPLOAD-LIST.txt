@@ -1,33 +1,71 @@
-FILES TO UPLOAD (keep this structure)
-======================================
+GoDaddy / PHP deployment (current stack)
+========================================
 
-In the ROOT (e.g. public_html or Netlify drop):
-  index.html
-  services.html
-  techniques.html
-  bio.html
-  bookings.html
-  contact.html
-  sitemap.xml
-  robots.txt
+Requirements: PHP 8+ with PDO SQLite enabled, Apache mod_rewrite (for .htaccess).
 
-Folder: css/
-  css/style.css
+Upload the site preserving this structure:
 
-Folder: js/
-  js/main.js
+  .htaccess
+  router.php              (optional; for local php -S only)
+  index.html, *.html, client-forms.html
+  sitemap.xml, robots.txt
+  css/
+  js/
+    js/yml-api.js   (required — builds /api/index.php?r=... URLs)
+  assets/
+  admin/
+  api/index.php
+  includes/               (all .php files)
+  config.example.php      (reference only)
+  db/.htaccess            (and empty db/ or let the app create app.sqlite)
 
-Folder: assets/
-  assets/hero-massage.jpg
-  assets/services-hands.jpg
-  assets/bio-studio.jpg
-  assets/logo.png
+On the server, create config.local.php next to index.html (copy from config.example.php).
+Do NOT upload config.local.php from a public repo if it contains secrets — create it on the host.
 
-If you added certificate PDFs, also upload:
-  assets/cert-cmt.pdf
-  assets/cert-cmldt.pdf
-  assets/cert-clt.pdf
+Set folder permissions so PHP can create/write:
+  db/app.sqlite
 
----
-Ready-made zip: yuliasmassagelab-upload.zip
-Upload that to Netlify (drag & drop), or unzip it on your server into public_html.
+NOT needed: node_modules, package.json, Composer, or vendor.
+
+FTP / lftp sync (exclude .git, .venv, etc.)
+------------------------------------------
+Your mirror used `venv` but the folder is `.venv` — that is why it uploaded.
+
+Recommended workflow:
+  1. cp .deploy-credentials.example .deploy-credentials
+     Edit YML_DEPLOY_* (host, user, pass, optional YML_REMOTE_DIR for staging path).
+  2. ./scripts/deploy-staging.sh
+     → runs prep-deploy.sh, then lftp mirror to remote (mkdir -p remote staging if missing).
+  Or manually:
+  1. ./scripts/prep-deploy.sh
+     → creates .deploy-staging/ with rsync and .deployignore (no .git, .venv, …)
+  2. lftp: lcd to the FULL path of .deploy-staging, cd to the remote folder, then:
+       mirror -R --delete --verbose ./
+     (mirror the staging folder, not the whole repo)
+
+Alternative without staging: see scripts/lftp-mirror-direct.txt (long --exclude-glob list).
+
+.deploy-staging/ is gitignored. Do not upload .env or config.local.php — they stay local.
+
+Local test without Apache (required for admin login — API uses POST):
+  ./start-local-server.sh
+  or:  php -S localhost:8080 router.php
+Then open http://localhost:8080/ and http://localhost:8080/admin/login.html
+
+If you see "501 Unsupported method ('POST')" or "HTTPStatus.NOT_IMPLEMENTED":
+  You are using the wrong server (e.g. python -m http.server or a static preview).
+  Stop it and use ONLY the command above so router.php handles /api/*.
+
+If you see "404 File not found" (often Python http.server):
+  The browser must call a real PHP file. This site uses /api/index.php?r=... URLs (see js/yml-api.js).
+  Do not use python -m http.server — it has no PHP. Use: php -S localhost:8080 router.php
+
+If the site is in a subfolder (e.g. /massage/), edit .htaccess RewriteBase and set
+public_base_url in config.local.php to include that path.
+
+Troubleshooting saves / admin forms
+----------------------------------
+- Open the site via http://localhost:8080/... (php -S), not file:///... — otherwise /api calls break.
+- Use one host consistently (localhost vs 127.0.0.1) so the session cookie matches.
+- cookie_secure in config.local.php only sends Secure cookies on HTTPS; http:// local dev still works.
+- If the DB seems corrupt, stop PHP, delete db/app.sqlite db/app.sqlite-wal db/app.sqlite-shm, reload — tables are recreated (you lose data). Or set 'debug' => true in config.local.php briefly to see API errors in JSON.

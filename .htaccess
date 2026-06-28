@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # If the site lives in a subfolder, set RewriteBase /your-subfolder/
+  RewriteBase /
+
+  # API → PHP front controller
+  RewriteRule ^api/(.*)$ api/index.php?r=$1 [L,QSA]
+</IfModule>
+
+# Block direct web access to SQLite (defense in depth; also use db/.htaccess)
+<IfModule mod_authz_core.c>
+  <FilesMatch "\.(sqlite|sqlite3|sqlite-shm|sqlite-wal)$">
+    Require all denied
+  </FilesMatch>
+</IfModule>

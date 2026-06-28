@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Staff login — Yulia's Massage Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="admin-login-box">
+    <h1>Staff login</h1>
+    <p class="admin-muted">Admin access for forms and clients.</p>
+    <div id="msg"></div>
+    <form id="login-form" class="admin-form-grid" style="max-width: none;">
+      <label>Email
+        <input type="email" id="email" name="email" autocomplete="username" required>
+      </label>
+      <label>Password
+        <input type="password" id="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="admin-btn admin-btn-primary" style="margin-top: 0.5rem; padding: 0.6rem;">Sign in</button>
+    </form>
+    <p class="admin-muted" style="margin-top: 1.5rem;"><a href="../index.html">← Back to site</a></p>
+  </div>
+  <script src="../js/yml-api.js"></script>
+  <script>
+    (function() {
+      var API_ROOT = '';
+      if (location.protocol === 'file:') {
+        API_ROOT = 'http://localhost:8080';
+        var el = document.getElementById('msg');
+        el.innerHTML = '<div class="admin-msg admin-msg--err">Open this page in the browser at <strong>http://localhost:8080/admin/login.html</strong> (run <code>php -S localhost:8080 router.php</code> in the project folder). The file:// URL cannot reach the API.</div>';
+      }
+
+      function apiPath(p) {
+        return API_ROOT + (typeof ymlApiUrl === 'function' ? ymlApiUrl(p) : p);
+      }
+
+      function parseJsonResponse(r) {
+        var ct = (r.headers.get('content-type') || '').toLowerCase();
+        if (ct.indexOf('application/json') === -1) {
+          return r.text().then(function(t) {
+            var hint = t ? t.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300) : '';
+            throw new Error(hint || (r.status + ' ' + r.statusText + ' (not JSON — check PHP error_log)'));
+          });
+        }
+        return r.json();
+      }
+
+      if (API_ROOT === '') {
+        fetch(apiPath('/api/auth/me'), { credentials: 'include' })
+          .then(function(r) {
+            if (!r.ok) return;
+            return parseJsonResponse(r).then(function() {
+              window.location.href = 'index.html';
+            });
+          })
+          .catch(function() {});
+      }
+
+      var form = document.getElementById('login-form');
+      var msg = document.getElementById('msg');
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (location.protocol === 'file:') return;
+        msg.innerHTML = '';
+        var url = apiPath('/api/auth/login');
+        fetch(url, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+          })
+        })
+          .then(function(r) {
+            return parseJsonResponse(r).then(function(j) {
+              return { ok: r.ok, j: j };
+            });
+          })
+          .then(function(x) {
+            if (x.ok) {
+              window.location.href = 'index.html';
+            } else {
+              msg.innerHTML = '<div class="admin-msg admin-msg--err">' + escapeHtml(x.j.error || 'Login failed') + '</div>';
+            }
+          })
+          .catch(function(err) {
+            msg.innerHTML = '<div class="admin-msg admin-msg--err">' + escapeHtml(err.message || 'Request failed — is PHP running? Try: php -S localhost:8080 router.php') + '</div>';
+          });
+      });
+
+      function escapeHtml(t) {
+        var d = document.createElement('div');
+        d.textContent = t;
+        return d.innerHTML;
+      }
+    })();
+  </script>
+</body>
+</html>

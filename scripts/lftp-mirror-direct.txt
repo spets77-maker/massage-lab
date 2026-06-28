@@ -1,0 +1,20 @@
+# Optional: mirror from repo root without prep-deploy.sh.
+# lftp exclude-glob matches paths relative to the source directory (lftp 4.8+).
+# Prefer: ./prep-deploy.sh then mirror only .deploy-staging/
+
+mirror -R --delete --verbose \
+  --exclude-glob '.git/**' \
+  --exclude-glob '.venv/**' \
+  --exclude-glob 'venv/**' \
+  --exclude-glob 'node_modules/**' \
+  --exclude-glob '**/__pycache__/**' \
+  --exclude-glob '*.pyc' \
+  --exclude-glob '.DS_Store' \
+  --exclude-glob '.env' \
+  --exclude-glob 'config.local.php' \
+  --exclude-glob '*.zip' \
+  --exclude-glob 'yuliasmassagelab-upload/**' \
+  --exclude-glob '.deploy-staging/**' \
+  --exclude-glob '.cursor/**' \
+  --exclude-glob '.idea/**' \
+  ./ public_html/yuliasmassagelab.com/spets

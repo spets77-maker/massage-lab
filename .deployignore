@@ -1,0 +1,25 @@
+# Used by scripts/prep-deploy.sh (rsync) — do not upload these to production.
+.git/
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+config.local.php
+*.zip
+yuliasmassagelab-upload/
+.deploy-staging/
+.cursor/
+.idea/
+*.swp
+*.log
+terminals/
+scripts/
+*.md
+
+# Optional: uncomment to avoid pushing local SQLite to the server (create DB on host instead).
+# *.sqlite
+# *.sqlite-shm
+# *.sqlite-wal

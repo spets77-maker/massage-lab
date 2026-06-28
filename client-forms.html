@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Client forms — Yulia's Massage Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"></button>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="techniques.html">Techniques</a></li>
+          <li><a href="bio.html">About</a></li>
+          <li><a href="bookings.html">Book</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="wrap" style="max-width: 640px;">
+      <div id="app-error" style="display: none;"></div>
+      <div id="app-main" style="display: none;">
+        <p class="admin-muted" id="greeting"></p>
+
+        <div id="step-waiver" style="display: none;">
+          <h1>Waiver</h1>
+          <div id="waiver-template" class="client-form-template"></div>
+          <div class="client-form-actions">
+            <label style="display: flex; gap: 0.5rem; align-items: flex-start; font-weight: 600;">
+              <input type="checkbox" id="waiver-agree" style="margin-top: 0.25rem;">
+              <span>I have read and agree to the above.</span>
+            </label>
+            <label style="display: block; margin-top: 1rem; font-weight: 600;">
+              Full name (signature)
+              <input type="text" id="waiver-signature" style="width: 100%; font: inherit; padding: 0.5rem; margin-top: 0.25rem;" autocomplete="name">
+            </label>
+            <button type="button" class="admin-btn admin-btn-primary" id="btn-waiver" style="margin-top: 1rem;">Submit waiver</button>
+          </div>
+        </div>
+
+        <div id="step-intake" style="display: none;">
+          <h1>Health intake</h1>
+          <div id="intake-template" class="client-form-template"></div>
+          <div class="client-form-actions">
+            <label style="display: block; font-weight: 600;">Current medications
+              <textarea id="intake-meds" rows="2" style="width: 100%; font: inherit; margin-top: 0.25rem;"></textarea>
+            </label>
+            <label style="display: block; margin-top: 0.75rem; font-weight: 600;">Medical conditions / concerns
+              <textarea id="intake-conditions" rows="2" style="width: 100%; font: inherit; margin-top: 0.25rem;"></textarea>
+            </label>
+            <label style="display: block; margin-top: 0.75rem; font-weight: 600;">Allergies
+              <textarea id="intake-allergies" rows="2" style="width: 100%; font: inherit; margin-top: 0.25rem;"></textarea>
+            </label>
+            <label style="display: block; margin-top: 0.75rem; font-weight: 600;">Anything else we should know?
+              <textarea id="intake-other" rows="3" style="width: 100%; font: inherit; margin-top: 0.25rem;"></textarea>
+            </label>
+            <label style="display: flex; gap: 0.5rem; align-items: flex-start; font-weight: 600; margin-top: 1rem;">
+              <input type="checkbox" id="intake-agree" style="margin-top: 0.25rem;">
+              <span>I confirm the information above is accurate to the best of my knowledge.</span>
+            </label>
+            <label style="display: block; margin-top: 1rem; font-weight: 600;">
+              Full name (signature)
+              <input type="text" id="intake-signature" style="width: 100%; font: inherit; padding: 0.5rem; margin-top: 0.25rem;" autocomplete="name">
+            </label>
+            <button type="button" class="admin-btn admin-btn-primary" id="btn-intake" style="margin-top: 1rem;">Submit intake</button>
+          </div>
+        </div>
+
+        <div id="step-done" style="display: none;">
+          <h1>Thank you</h1>
+          <p>Your forms have been received. We'll be in touch if anything else is needed.</p>
+          <p><a href="index.html">Return to the main site</a></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span class="logo"><a href="index.html">Yulia's Massage Lab</a></span>
+      <nav class="nav">
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="techniques.html">Techniques</a></li>
+          <li><a href="bio.html">About</a></li>
+          <li><a href="bookings.html">Book</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <p class="footer-staff"><a href="admin/login.html">Staff</a></p>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+  <script src="js/yml-api.js"></script>
+  <script>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var token = (params.get('token') || '').trim();
+      var errEl = document.getElementById('app-error');
+      var mainEl = document.getElementById('app-main');
+
+      function showError(msg) {
+        errEl.style.display = 'block';
+        errEl.innerHTML = '<div class="admin-msg admin-msg--err">' + escapeHtml(msg) + '</div>';
+        mainEl.style.display = 'none';
+      }
+
+      function escapeHtml(t) {
+        var d = document.createElement('div');
+        d.textContent = t;
+        return d.innerHTML;
+      }
+
+      if (!token) {
+        showError('This page needs a valid link. Please use the link sent to you by email or text.');
+        return;
+      }
+
+      function api(path, opts) {
+        path = typeof ymlApiUrl === 'function' ? ymlApiUrl(path) : path;
+        opts = opts || {};
+        opts.headers = opts.headers || {};
+        if (opts.body && typeof opts.body === 'object') {
+          opts.headers['Content-Type'] = 'application/json';
+          opts.body = JSON.stringify(opts.body);
+        }
+        return fetch(path, opts).then(function(r) {
+          var ct = (r.headers.get('content-type') || '').toLowerCase();
+          if (ct.indexOf('application/json') === -1) {
+            return r.text().then(function(t) {
+              throw new Error(t ? t.slice(0, 200) : r.statusText);
+            });
+          }
+          return r.json().then(function(j) {
+            if (!r.ok) throw new Error(j.error || r.statusText);
+            return j;
+          });
+        });
+      }
+
+      function renderState(data) {
+        mainEl.style.display = 'block';
+        var c = data.customer;
+        document.getElementById('greeting').textContent =
+          'Hello, ' + c.first_name + ' ' + c.last_name + '. Please complete the forms below.';
+
+        document.getElementById('waiver-template').innerHTML = data.templates.waiver_html;
+        document.getElementById('intake-template').innerHTML = data.templates.intake_html;
+
+        var w = document.getElementById('step-waiver');
+        var i = document.getElementById('step-intake');
+        var d = document.getElementById('step-done');
+        w.style.display = 'none';
+        i.style.display = 'none';
+        d.style.display = 'none';
+
+        if (!data.status.waiver_done) {
+          w.style.display = 'block';
+        } else if (!data.status.intake_done) {
+          i.style.display = 'block';
+        } else {
+          d.style.display = 'block';
+          document.getElementById('greeting').textContent = 'Thank you, ' + c.first_name + '.';
+        }
+      }
+
+      api('/api/public/forms/' + encodeURIComponent(token))
+        .then(renderState)
+        .catch(function(e) {
+          showError(e.message || 'Could not load forms.');
+        });
+
+      document.getElementById('btn-waiver').addEventListener('click', function() {
+        var agreed = document.getElementById('waiver-agree').checked;
+        var signature = (document.getElementById('waiver-signature').value || '').trim();
+        api('/api/public/forms/' + encodeURIComponent(token) + '/submit', {
+          method: 'POST',
+          body: {
+            kind: 'waiver',
+            data: { agreed: agreed, signature: signature }
+          }
+        })
+          .then(function() {
+            return api('/api/public/forms/' + encodeURIComponent(token));
+          })
+          .then(renderState)
+          .catch(function(e) {
+            alert(e.message);
+          });
+      });
+
+      document.getElementById('btn-intake').addEventListener('click', function() {
+        var agreed = document.getElementById('intake-agree').checked;
+        var signature = (document.getElementById('intake-signature').value || '').trim();
+        api('/api/public/forms/' + encodeURIComponent(token) + '/submit', {
+          method: 'POST',
+          body: {
+            kind: 'intake',
+            data: {
+              agreed: agreed,
+              signature: signature,
+              medications: document.getElementById('intake-meds').value,
+              conditions: document.getElementById('intake-conditions').value,
+              allergies: document.getElementById('intake-allergies').value,
+              other_notes: document.getElementById('intake-other').value
+            }
+          }
+        })
+          .then(function() {
+            return api('/api/public/forms/' + encodeURIComponent(token));
+          })
+          .then(renderState)
+          .catch(function(e) {
+            alert(e.message);
+          });
+      });
+    })();
+  </script>
+</body>
+</html>
